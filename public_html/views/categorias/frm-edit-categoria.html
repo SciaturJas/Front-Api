@@ -1,0 +1,88 @@
+<div  class="modal fade" id="mdlEditCategoria" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Editar Categoria</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="formEditCategoria">
+        <input type="hidden" name="txtId" id="txtId">
+        <div class="modal-body">
+          <!-- form start -->
+          <div class="form-group">
+            <label for="txtCodigo">Código</label>
+            <input type="text" name="txtCodigo" class="form-control" id="txtCodigo" placeholder="Ingrese código">
+          </div>
+
+          <div class="form-group">
+            <label for="txtNombre">Nombre</label>
+            <input type="text" name="txtNombre" class="form-control" id="txtNombre" placeholder="Ingrese nombre">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  $(function () {
+    $.validator.setDefaults({
+      submitHandler: function () {
+        
+        $.ajax({
+          method: "put",
+          url: "http://apis-oxigas.c2510084.ferozo.com/api/categorias",
+          headers: {"Authorization": "Bearer "+_token},
+          data:{
+            id: $("#txtId").val(), 
+            codigo: $("#txtCodigo").val(), 
+            nombre: $("#txtNombre").val(),
+          }
+        }).done(function(msg){
+
+          $("#txtCodigo").val("");
+          $("#txtNombre").val("");
+
+          $("#mdlEditCategoria").modal("hide");
+          updateDatatable();
+
+        });
+
+      }
+    });
+    $('#formEditCategoria').validate({
+      rules: {
+        txtCodigo: {
+          required: true,
+        },
+        txtNombre: {
+          required: true,
+        }
+      },
+      messages: {
+        txtCodigo: {
+          required: "Ingrese el valor del código",
+        },
+        txtNombre: {
+          required: "Ingrese el nombre",
+        }
+      },
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+      }
+    });
+  });
+</script>
